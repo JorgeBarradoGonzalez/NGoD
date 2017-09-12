@@ -44,29 +44,16 @@ public class GameController : MonoBehaviour
     public string natureEffect = "Both";
     //
     bool creditsShown = false;
-    int quitApp;// if 0 the app was no close so it replays the scene. if 1 then the menu is shown
     // Use this for initialization
 
     void Start()
     {
-        quitApp = PlayerPrefs.GetInt("QuitApp");
         skyRend = sky.GetComponent<Renderer>();
         mainMenuRend = mainMenu.GetComponent<Renderer>();
-        //player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour>();
-        /*
-        if (PlayerPrefs.HasKey("QuitApp") && quitApp == 0)
-        {
-            StartGame();
-        }
-        */
-        
         if (PlayerPrefs.GetInt("Replay") == 1)
         {
             StartGame();
         }
-        
-        
-        
     }
 
     // Update is called once per frame
@@ -91,12 +78,13 @@ public class GameController : MonoBehaviour
 
             }
         }
-        
+
     }
 
     IEnumerator ReleaseObstacles(float obstacleCooldown)
     {
-        if (gameOver == false) {
+        if (gameOver == false)
+        {
 
             for (int i = 0; i < 1; i += 0)
             {
@@ -106,7 +94,7 @@ public class GameController : MonoBehaviour
             }
         }
 
-        
+
     }
 
     void InstantiateObstacle()
@@ -136,7 +124,7 @@ public class GameController : MonoBehaviour
             yield return new WaitForSecondsRealtime(3.0f);
             StartCoroutine("ElementObstacleDrop");
         }
-        
+
     }
 
     void InstantiateElementObstacle()
@@ -183,7 +171,7 @@ public class GameController : MonoBehaviour
                     break;
             }
         }
-        
+
 
     }
 
@@ -249,7 +237,7 @@ public class GameController : MonoBehaviour
             }
             StartCoroutine("CheckStageAndMoveOn");
         }
-        
+
 
     }
 
@@ -258,7 +246,8 @@ public class GameController : MonoBehaviour
         obstacleCooldown = obstacleCooldown - 0.2f;
     }
 
-    public void GameOff() {
+    public void GameOff()
+    {
 
         if (timer > PlayerPrefs.GetFloat("BestScore"))
         {
@@ -275,7 +264,6 @@ public class GameController : MonoBehaviour
     public void CloseApp()
     {
         Application.Quit();
-        PlayerPrefs.SetInt("QuitApp",1);
         PlayerPrefs.SetInt("Replay", 0);
     }
     public void ReplayApp()
@@ -291,14 +279,15 @@ public class GameController : MonoBehaviour
         skyRend.material.SetTextureOffset("_MainTex", new Vector2(0, offset));
     }
 
-    void ChangeSkyColor() {
-        
+    void ChangeSkyColor()
+    {
+
         if (natureEffect == "Devil")
         {
 
-            skyRend.material.SetColor("_Color", Color.Lerp(Color.red,Color.white,Time.time * 100));
+            skyRend.material.SetColor("_Color", Color.Lerp(Color.red, Color.white, Time.time * 100));
         }
-        
+
         //skyRend.material.SetFloat("_OcclusionStrength", Mathf.Lerp(1.0f, 0.0f, Time.deltaTime * 2));
     }
 
@@ -341,7 +330,8 @@ public class GameController : MonoBehaviour
             credits.gameObject.SetActive(false);
             creditsShown = false;
         }
-        else {
+        else
+        {
             credits.gameObject.SetActive(true);
             creditsShown = true;
         }
