@@ -42,13 +42,31 @@ public class GameController : MonoBehaviour
     public Light gameLight;
     public bool changingLightColor = false;
     public string natureEffect = "Both";
+    //
+    bool creditsShown = false;
+    int quitApp;// if 0 the app was no close so it replays the scene. if 1 then the menu is shown
     // Use this for initialization
 
     void Start()
     {
+        quitApp = PlayerPrefs.GetInt("QuitApp");
         skyRend = sky.GetComponent<Renderer>();
         mainMenuRend = mainMenu.GetComponent<Renderer>();
         //player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour>();
+        /*
+        if (PlayerPrefs.HasKey("QuitApp") && quitApp == 0)
+        {
+            StartGame();
+        }
+        */
+        
+        if (PlayerPrefs.GetInt("Replay") == 1)
+        {
+            StartGame();
+        }
+        
+        
+        
     }
 
     // Update is called once per frame
@@ -242,8 +260,12 @@ public class GameController : MonoBehaviour
 
     public void GameOff() {
 
+        if (timer > PlayerPrefs.GetFloat("BestScore"))
+        {
+            PlayerPrefs.SetFloat("BestScore", timer);
+        }
         //playerScore.text = "Your time: " + timer;
-        playerScore.text = "Your time: " + Mathf.Round(timer) +" "+ "sec";
+        playerScore.text = "Your time: " + Mathf.Round(timer) + " " + "sec\n\nYour best: " + Mathf.Round(PlayerPrefs.GetFloat("BestScore")) + " sec";
         endGameAssets.gameObject.SetActive(true);
         gameOn = false;
         gameOver = true;
@@ -253,10 +275,14 @@ public class GameController : MonoBehaviour
     public void CloseApp()
     {
         Application.Quit();
+        PlayerPrefs.SetInt("QuitApp",1);
+        PlayerPrefs.SetInt("Replay", 0);
     }
-    public void PlayApp()
+    public void ReplayApp()
     {
         SceneManager.LoadScene("ProjectElementD");
+        PlayerPrefs.SetInt("Replay", 1);
+        StartGame();
     }
 
     public void SkyOffset()
@@ -295,14 +321,30 @@ public class GameController : MonoBehaviour
         Destroy(playButton);
         mainMenuRend.material.color = new Color(255, 255, 255, 0);
         Time.timeScale = 1;
-        //mainMenuRend.material.color = new Color(1f, 1f, 1f,0.0f);
-        //mainMenuRend.material.color = Color.Lerp((1f, 1f, 1f, 1f), (1f, 1f, 1f, 0.0f),Time.deltaTime);
-        //mainMenuRend.material.color = new Color(1f, 1f, 1f, Mathf.Lerp(1f,0f,Time.deltaTime));
-        //Color.Lerp(mainMenuRend.material.color, new Color(1f, 1f, 1f,0f),Time.deltaTime);
-        //mainMenuAlphaColor = Mathf.Lerp(240.0f, 0.0f, Time.deltaTime * 100);
-        //Color.Lerp(mainMenuRend.material.color, new Color(1f, 1f, 1f, 0f), Time.deltaTime);
-        //menuAlpha -= 0.01f;
-        //mainMenuRend.material.color = new Color(255,255,255, Mathf.Lerp(1f, 0f, Time.deltaTime * 10));
+        /*
+        mainMenuRend.material.color = new Color(1f, 1f, 1f,0.0f);
+        mainMenuRend.material.color = Color.Lerp((1f, 1f, 1f, 1f), (1f, 1f, 1f, 0.0f),Time.deltaTime);
+        mainMenuRend.material.color = new Color(1f, 1f, 1f, Mathf.Lerp(1f,0f,Time.deltaTime));
+        Color.Lerp(mainMenuRend.material.color, new Color(1f, 1f, 1f,0f),Time.deltaTime);
+        mainMenuAlphaColor = Mathf.Lerp(240.0f, 0.0f, Time.deltaTime * 100);
+        Color.Lerp(mainMenuRend.material.color, new Color(1f, 1f, 1f, 0f), Time.deltaTime);
+        menuAlpha -= 0.01f;
+        mainMenuRend.material.color = new Color(255,255,255, Mathf.Lerp(1f, 0f, Time.deltaTime * 10));
+        */
+    }
+
+    public void ShowCredits()
+    {
+        GameObject credits = playButton.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject;
+        if (creditsShown == true)
+        {
+            credits.gameObject.SetActive(false);
+            creditsShown = false;
+        }
+        else {
+            credits.gameObject.SetActive(true);
+            creditsShown = true;
+        }
     }
 
 }
